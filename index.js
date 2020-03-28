@@ -61,7 +61,10 @@ const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
 
 const copyWiremockPingMapping = wiremockMappingsPath => {
   const pingMapping = path.join(__dirname, "__wiremock-ping-mapping.json");
-  fs.copyFileSync(pingMapping, wiremockMappingsPath);
+  fs.copyFileSync(
+    pingMapping,
+    path.join(wiremockMappingsPath, "__wiremock-ping-mapping.json")
+  );
 };
 
 const startWireMock = wiremockPath => {
