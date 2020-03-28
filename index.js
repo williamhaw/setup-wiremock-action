@@ -121,7 +121,7 @@ const inputs = getInputs();
 installWiremockFromToolCache()
   .then(state => {
     return {
-      state,
+      ...state,
       ...copyStubs(inputs.mappingsPath, inputs.filesPath, state.wiremockPath)
     };
   })
@@ -131,13 +131,13 @@ installWiremockFromToolCache()
   })
   .then(state => {
     return {
-      state,
+      ...state,
       ...startWireMock(state.wiremockPath)
     };
   })
   .then(state => {
     return {
-      state,
+      ...state,
       ...isWireMockRunning()
     };
   })
