@@ -140,8 +140,10 @@ installWiremockFromToolCache()
     return state;
   })
   .then(state => {
-    cp.exec(`ls -lah ${state.wiremockPath}`, { stdio: "inherit" });
-    cp.exec(`ls -lah ${state.wiremockParentPath}`, { stdio: "inherit" });
+    const pathLs = cp.exec(`ls -lah ${state.wiremockPath}`).toString();
+    console.log(`wiremockPath: ${pathLs}`)
+    const parentPathLs = cp.exec(`ls -lah ${state.wiremockParentPath}`).toString();
+    console.log(`wiremockParentPath: ${parentPathLs}`)
   })
   .then(async state => {
     try {
