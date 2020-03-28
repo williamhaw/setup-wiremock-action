@@ -10,6 +10,7 @@ const wiremockStdOutPath = "out.log";
 const wiremockStdErrPath = "err.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
+const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
 
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
@@ -28,10 +29,10 @@ const getInputs = () => {
 const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
-    return { wiremockPath: wiremockPath };
+    return { wiremockPath: path.join(wiremockPath, wiremockArtifactName) };
   } else {
     wiremockPath = await tc.downloadTool(
-      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/wiremock-standalone-${wiremockVersion}.jar`
+      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/${wiremockArtifactName}`
     );
     const cachedPath = await tc.cacheFile(
       wiremockPath,
@@ -39,7 +40,7 @@ const installWiremockFromToolCache = async () => {
       "wiremock",
       wiremockVersion
     );
-    return { wiremockPath: cachedPath };
+    return { wiremockPath: path.join(cachedPath, wiremockArtifactName) };
   }
 };
 
@@ -141,9 +142,11 @@ installWiremockFromToolCache()
   })
   .then(state => {
     const pathLs = cp.execSync(`ls -lah ${state.wiremockPath}`).toString();
-    console.log(`wiremockPath: ${pathLs}`)
-    const parentPathLs = cp.execSync(`ls -lah ${state.wiremockParentPath}`).toString();
-    console.log(`wiremockParentPath: ${parentPathLs}`)
+    console.log(`wiremockPath: ${pathLs}`);
+    const parentPathLs = cp
+      .execSync(`ls -lah ${state.wiremockParentPath}`)
+      .toString();
+    console.log(`wiremockParentPath: ${parentPathLs}`);
   })
   .then(async state => {
     try {
