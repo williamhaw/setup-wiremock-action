@@ -24,7 +24,6 @@ const getInputs = () => {
 const installWiremock = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
-    core.addPath(wiremockPath);
     return wiremockPath;
   } else {
     wiremockPath = await tc.downloadTool(
@@ -35,7 +34,6 @@ const installWiremock = async () => {
       "wiremock",
       wiremockVersion
     );
-    core.addPath(cachedPath);
     return wiremockPath;
   }
 };
