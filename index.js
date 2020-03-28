@@ -121,7 +121,7 @@ installWiremockFromToolCache()
     };
   })
   .then(state => {
-    copyWiremockPingMapping(wiremockPaths.wiremockMappingsPath);
+    copyWiremockPingMapping(state.wiremockMappingsPath);
     return state;
   })
   .then(state => {
