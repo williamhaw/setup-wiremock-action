@@ -134,6 +134,10 @@ installWiremockFromToolCache()
     };
   })
   .then(state => {
+    console.log(state);
+    return state;
+  })
+  .then(state => {
     return {
       state,
       ...isWireMockRunning()
