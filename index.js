@@ -116,6 +116,11 @@ const setActionOutput = () => {
   core.setOutput("wiremock-stdout", stdError);
 };
 
+const wait = (duration, ...args) =>
+  new Promise(resolve => {
+    setTimeout(resolve, duration, ...args);
+  });
+
 /*
 Main logic starts
 */
@@ -139,15 +144,22 @@ installWiremockFromToolCache()
       ...startWireMock(state.wiremockPath)
     };
   })
-  .then(state => {
-    console.log(state);
-    return state;
-  })
+  // .then(state => {
+  //   console.log(state);
+  //   return state;
+  // })
   .then(state => {
     const parentPathLs = cp
       .execSync(`find ${state.wiremockParentPath}`)
       .toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
+  })
+  .then(async state => {
+    await wait(1000);
+    wiremockStdOut.end();
+    wiremockStdErr.end();
+    setActionOutput();
+    return state;
   })
   .then(async state => {
     const isRunning = await isWireMockRunning();
