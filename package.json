@@ -22,7 +22,8 @@
   "homepage": "https://github.com/williamhaw/setup-wiremock-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.3",
-    "@actions/tool-cache": "^1.3.3"
+    "@actions/tool-cache": "^1.3.3",
+    "fs-extra": "^9.0.0"
   },
   "devDependencies": {
     "prettier": "2.0.2"
