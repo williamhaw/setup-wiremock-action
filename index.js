@@ -11,52 +11,6 @@ const wiremockStdErrPath = "err.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 
-const inputs = getInputs();
-
-/*
-  Main logic starts
-*/
-
-installWiremockFromToolCache
-  .then(state => {
-    return {
-      state,
-      ...copyStubs(inputs.mappingsPath, inputs.filesPath, state.wiremockPath)
-    };
-  })
-  .then(state => {
-    copyWiremockPingMapping(wiremockPaths.wiremockMappingsPath);
-    return state;
-  })
-  .then(state => {
-    return {
-      state,
-      ...startWireMock(state.wiremockPath)
-    };
-  })
-  .then(state => {
-    return {
-      state,
-      ...isWireMockRunning()
-    };
-  })
-  .then(state => {
-    shutdownWiremock(state.wiremockProcess);
-    return state;
-  })
-  .then(state => {
-    setActionOutput();
-    return state;
-  })
-  .catch(error => {
-    core.setFailed(error.message);
-    process.exit(1);
-  });
-
-/*
-  Main logic ends
-*/
-
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
   const filesPath = core.getInput("mappings", { required: true });
@@ -151,3 +105,49 @@ const setActionOutput = () => {
   const stdError = fs.readFileSync(wiremockStdErrPath, { encoding: "utf8" });
   core.setOutput("wiremock-stdout", stdError);
 };
+
+/*
+Main logic starts
+*/
+
+const inputs = getInputs();
+
+installWiremockFromToolCache
+  .then(state => {
+    return {
+      state,
+      ...copyStubs(inputs.mappingsPath, inputs.filesPath, state.wiremockPath)
+    };
+  })
+  .then(state => {
+    copyWiremockPingMapping(wiremockPaths.wiremockMappingsPath);
+    return state;
+  })
+  .then(state => {
+    return {
+      state,
+      ...startWireMock(state.wiremockPath)
+    };
+  })
+  .then(state => {
+    return {
+      state,
+      ...isWireMockRunning()
+    };
+  })
+  .then(state => {
+    shutdownWiremock(state.wiremockProcess);
+    return state;
+  })
+  .then(state => {
+    setActionOutput();
+    return state;
+  })
+  .catch(error => {
+    core.setFailed(error.message);
+    process.exit(1);
+  });
+
+/*
+  Main logic ends
+*/
