@@ -144,7 +144,8 @@ installWiremockFromToolCache()
     return state;
   })
   .catch(error => {
-    core.setFailed(error);
+    console.error(error);
+    core.setFailed(error.message);
     process.exit(1);
   });
 
