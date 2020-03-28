@@ -14,8 +14,10 @@ inputs:
     required: false
     default: '8080'
 outputs:
-  wiremock-log:
+  wiremock-stdout:
     description: 'Logs from Wiremock'
+  wiremock-stderr:
+    description: 'Errors from running Wiremock'
 runs:
   using: 'node12'
   main: 'index.js'
