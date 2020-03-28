@@ -86,7 +86,8 @@ const isWireMockRunning = async () => {
   try {
     const retry = {
       retry: {
-        limit: 10
+        limit: 100,
+        calculateDelay: _ => 100
       }
     };
     const response = await got(
