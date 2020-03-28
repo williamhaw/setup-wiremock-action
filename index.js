@@ -3,7 +3,7 @@ const tc = require("@actions/tool-cache");
 const path = require("path");
 const fs = require("fs-extra");
 const cp = require("child_process");
-const http = require("http");
+const got = require("got");
 
 const wiremockVersion = "2.26.3";
 const wiremockStdOutPath = "out.log";
@@ -82,19 +82,16 @@ const startWireMock = wiremockPath => {
   return { wiremockProcess: wiremockProcess };
 };
 
-//check that Wiremock is running
-const isWireMockRunning = () =>
-  new Promise((resolve, reject) => {
-    const request = http
-      .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
-        const { statusCode } = response;
-        resolve({ isWireMockRunning: statusCode === 200 });
-      })
-      .on("error", e => {
-        return reject(e);
-      });
-    request.end();
-  });
+const isWireMockRunning = async () => {
+  try {
+    const response = await got(
+      `http://localhost:${inputs.httpPort}/__wiremock_ping`
+    );
+    return { isWireMockRunning: response.statusCode === 200 };
+  } catch (e) {
+    throw e;
+  }
+};
 
 //run tests from CLI (command to run tests to be given through action parameter)
 
