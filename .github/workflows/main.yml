@@ -1,0 +1,19 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Set up WireMock as a standalone process
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Hello world action step
+        uses: ./
+        id: setup-wiremock
+        with:
+          mappings: ''
+          files: ''
+      - name: Get the WireMock standard output
+        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
+      - name: Get the WireMock standard error
+        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stderr }}"
