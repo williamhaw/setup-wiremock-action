@@ -1,6 +1,9 @@
 const core = require("@actions/core");
 const tc = require("@actions/tool-cache");
 
+const inputs = getInputs();
+const wiremockVersion = "2.26.3";
+
 const getInputs = () => {
   try {
     const mappingsPath = core.getInput("mappings", { required: true });
@@ -16,9 +19,6 @@ const getInputs = () => {
     core.setFailed(error.message);
   }
 };
-
-const inputs = getInputs();
-const wiremockVersion = "2.26.3";
 
 //install Wiremock jar from toolcache
 const installWiremock = async () => {
