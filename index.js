@@ -13,6 +13,50 @@ const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 
 const inputs = getInputs();
 
+/*
+  Main logic starts
+*/
+
+installWiremockFromToolCache
+  .then(state => {
+    return {
+      state,
+      ...copyStubs(inputs.mappingsPath, inputs.filesPath, state.wiremockPath)
+    };
+  })
+  .then(state => {
+    copyWiremockPingMapping(wiremockPaths.wiremockMappingsPath);
+    return state;
+  })
+  .then(state => {
+    return {
+      state,
+      ...startWireMock(state.wiremockPath)
+    };
+  })
+  .then(state => {
+    return {
+      state,
+      ...isWireMockRunning()
+    };
+  })
+  .then(state => {
+    shutdownWiremock(state.wiremockProcess);
+    return state;
+  })
+  .then(state => {
+    setActionOutput();
+    return state;
+  })
+  .catch(error => {
+    core.setFailed(error.message);
+    process.exit(1);
+  });
+
+/*
+  Main logic ends
+*/
+
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
   const filesPath = core.getInput("mappings", { required: true });
@@ -30,7 +74,7 @@ const getInputs = () => {
 const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
-    return wiremockPath;
+    return { wiremockPath: wiremockPath };
   } else {
     wiremockPath = await tc.downloadTool(
       `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/wiremock-standalone-${wiremockVersion}.jar`
@@ -40,7 +84,7 @@ const installWiremockFromToolCache = async () => {
       "wiremock",
       wiremockVersion
     );
-    return cachedPath;
+    return { wiremockPath: cachedPath };
   }
 };
 
@@ -76,18 +120,20 @@ const startWireMock = wiremockPath => {
   wiremockProcess.stderr.on("data", data => {
     wiremockStdErr.write(data);
   });
-  return wiremockProcess;
+  return { wiremockProcess: wiremockProcess };
 };
 
 //check that Wiremock is running
-const isWireMockRunning = http
-  .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
-    const { statusCode } = response;
-    return statusCode === 200;
-  })
-  .on("error", e => {
-    throw e;
-  });
+const isWireMockRunning = () => {
+  return http
+    .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
+      const { statusCode } = response;
+      return { isWireMockRunning: statusCode === 200 };
+    })
+    .on("error", e => {
+      throw e;
+    });
+};
 
 //run tests from CLI (command to run tests to be given through action parameter)
 
