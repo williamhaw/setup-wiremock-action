@@ -30,7 +30,7 @@ const installWiremock = async () => {
       "wiremock",
       wiremockVersion
     );
-    return wiremockPath;
+    return cachedPath;
   }
 };
 
