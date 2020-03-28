@@ -139,6 +139,22 @@ installWiremockFromToolCache()
     console.log(state);
     return state;
   })
+  .then(state => {
+    cp.exec(`ls -lah ${state.wiremockPath}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(`exec error: ${err}`);
+        return;
+      }
+      console.log(`ls on wiremockPath ${stdout}`);
+    });
+    cp.exec(`ls -lah ${state.wiremockParentPath}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error(`exec error: ${err}`);
+        return;
+      }
+      console.log(`ls on wiremockParentPath ${stdout}`);
+    });
+  })
   .then(async state => {
     try {
       const isRunning = await isWireMockRunning();
