@@ -1,5 +1,6 @@
 # setup-wiremock-action
 
+Requires Java on the PATH.
 
 ## Inputs
 
@@ -25,6 +26,9 @@ Logs from Wiremock. If any stubs are not matched, they will be reported here.
 
 ## Example usage
 ```
+uses: actions/setup-java@v1
+    with:
+        java-version: '11'
 uses: actions/setup-wiremock-action@v0.1.0
 with:
     mappings: 'wiremock-mappings'
