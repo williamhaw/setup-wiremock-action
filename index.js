@@ -141,10 +141,8 @@ installWiremockFromToolCache()
     return state;
   })
   .then(state => {
-    const pathLs = cp.execSync(`ls -lah ${state.wiremockPath}`).toString();
-    console.log(`wiremockPath: ${pathLs}`);
     const parentPathLs = cp
-      .execSync(`ls -lah ${state.wiremockParentPath}`)
+      .execSync(`find ${state.wiremockParentPath}`)
       .toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
   })
