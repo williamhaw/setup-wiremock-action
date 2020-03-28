@@ -84,15 +84,9 @@ const startWireMock = wiremockPath => {
 
 const isWireMockRunning = async () => {
   try {
-    const retry = {
-      retry: {
-        limit: 100,
-        calculateDelay: _ => 100
-      }
-    };
     const response = await got(
       `http://localhost:${inputs.httpPort}/__wiremock_ping`,
-      retry
+      1
     );
     return { isWireMockRunning: response.statusCode === 200 };
   } catch (e) {
