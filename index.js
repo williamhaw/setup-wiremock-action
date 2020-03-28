@@ -92,5 +92,10 @@ const isWireMockRunning = http
 //run tests from CLI (command to run tests to be given through action parameter)
 
 //shutdown Wiremock
+const shutdownWiremock = wiremockProcess => {
+  wiremockProcess.kill();
+  wiremockStdOut.end();
+  wiremockStdErr.end();
+};
 
 //output Wiremock logging for stub mismatches
