@@ -5,19 +5,15 @@ const inputs = getInputs();
 const wiremockVersion = "2.26.3";
 
 const getInputs = () => {
-  try {
-    const mappingsPath = core.getInput("mappings", { required: true });
-    const filesPath = core.getInput("mappings", { required: true });
-    const httpPort = core.getInput("http-port");
+  const mappingsPath = core.getInput("mappings", { required: true });
+  const filesPath = core.getInput("mappings", { required: true });
+  const httpPort = core.getInput("http-port");
 
-    return {
-      mappingsPath: mappingsPath,
-      filesPath: filesPath,
-      httpPort: httpPort
-    };
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+  return {
+    mappingsPath: mappingsPath,
+    filesPath: filesPath,
+    httpPort: httpPort
+  };
 };
 
 //install Wiremock jar from toolcache
