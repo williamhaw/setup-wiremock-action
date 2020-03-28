@@ -112,7 +112,7 @@ Main logic starts
 
 const inputs = getInputs();
 
-installWiremockFromToolCache
+installWiremockFromToolCache()
   .then(state => {
     return {
       state,
