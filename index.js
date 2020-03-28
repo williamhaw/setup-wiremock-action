@@ -35,6 +35,7 @@ const installWiremockFromToolCache = async () => {
     );
     const cachedPath = await tc.cacheFile(
       wiremockPath,
+      `wiremock-standalone-${wiremockVersion}.jar`,
       "wiremock",
       wiremockVersion
     );
