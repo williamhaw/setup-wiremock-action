@@ -1,6 +1,8 @@
 # setup-wiremock-action
 
-Requires Java on the PATH.
+Sets up a [Wiremock](http://wiremock.org/) API using the provided stubs.
+
+Requirements: Java (preferably Java 11)
 
 ## Inputs
 
