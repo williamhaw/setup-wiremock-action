@@ -11,8 +11,8 @@ jobs:
         uses: ./
         id: setup-wiremock
         with:
-          mappings: ''
-          files: ''
+          mappings: 'example-mapping-directory'
+          files: 'example-files-directory'
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Get the WireMock standard error
