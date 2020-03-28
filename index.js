@@ -135,6 +135,10 @@ installWiremockFromToolCache()
       ...startWireMock(state.wiremockPath)
     };
   })
+  .then(state => {
+    console.log(state);
+    return state;
+  })
   .then(async state => {
     try {
       const isRunning = await isWireMockRunning();
@@ -145,10 +149,6 @@ installWiremockFromToolCache()
     } catch (e) {
       throw e;
     }
-  })
-  .then(state => {
-    console.log(state);
-    return state;
   })
   .then(state => {
     shutdownWiremock(state.wiremockProcess);
