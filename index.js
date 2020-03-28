@@ -71,7 +71,7 @@ const startWireMock = wiremockPath => {
   const options = {
     detached: true
   };
-  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath], options);
+  const wiremockProcess = cp.spawnSync("java", ["-jar", wiremockPath], options);
   wiremockProcess.stdout.on("data", data => {
     wiremockStdOut.write(data);
   });
