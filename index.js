@@ -1,5 +1,7 @@
 const core = require("@actions/core");
 const tc = require("@actions/tool-cache");
+const path = require("path");
+const fs = require("fs-extra");
 
 const inputs = getInputs();
 const wiremockVersion = "2.26.3";
@@ -35,6 +37,15 @@ const installWiremock = async () => {
 };
 
 //copy mappings and static files to ${wiremock-path}/mappings and ${wiremock-path}/__files
+const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
+  const wiremockParentPath = path.dirname(wiremockPath);
+  const wiremockMappingsPath = path.join(wiremockParentPath, "mappings");
+  const wiremockFilesPath = path.join(wiremockParentPath, "__files");
+  fs.emptyDirSync(wiremockMappingsPath);
+  fs.emptyDirSync(wiremockFilesPath);
+  fs.copySync(inputMappingsPath, wiremockMappingsPath);
+  fs.copySync(inputFilesPath, wiremockFilesPath);
+};
 //start WireMock
 //run tests from CLI (command to run tests to be given through action parameter)
 //shutdown Wiremock
