@@ -82,15 +82,17 @@ const startWireMock = wiremockPath => {
 };
 
 //check that Wiremock is running
-const isWireMockRunning = () => {
-  return http
-    .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
-      const { statusCode } = response;
-      return { isWireMockRunning: statusCode === 200 };
-    })
-    .on("error", e => {
-      throw e;
-    });
+const isWireMockRunning = async () => {
+  return await new Promise((resolve, reject) => {
+    http
+      .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
+        const { statusCode } = response;
+        resolve({ isWireMockRunning: statusCode === 200 });
+      })
+      .on("error", e => {
+        return reject(e);
+      });
+  });
 };
 
 //run tests from CLI (command to run tests to be given through action parameter)
@@ -134,14 +136,14 @@ installWiremockFromToolCache()
     };
   })
   .then(state => {
-    console.log(state);
-    return state;
-  })
-  .then(state => {
     return {
       state,
       ...isWireMockRunning()
     };
+  })
+  .then(state => {
+    console.log(state);
+    return state;
   })
   .then(state => {
     shutdownWiremock(state.wiremockProcess);
