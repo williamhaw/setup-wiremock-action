@@ -6,8 +6,10 @@ const cp = require("child_process");
 const http = require("http");
 
 const wiremockVersion = "2.26.3";
-const wiremockStdOutF = fs.openSync("out.log", "a");
-const wiremockStdErrF = fs.openSync("err.log", "a");
+const wiremockStdOutPath = "out.log";
+const wiremockStdErrPath = "err.log";
+const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
+const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 
 const inputs = getInputs();
 
@@ -25,8 +27,7 @@ const getInputs = () => {
   };
 };
 
-//install Wiremock jar from toolcache
-const installWiremock = async () => {
+const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
     return wiremockPath;
@@ -64,11 +65,18 @@ const copyWiremockPingMapping = wiremockMappingsPath => {
   fs.copyFileSync(pingMapping, wiremockMappingsPath);
 };
 
-//start WireMock
-const startWireMock = async wiremockPath => {
-  //cp.spawn("java", ["-jar", wiremockPath], { detached: true });
-  //use spawn
-  //write stdout to file
+const startWireMock = wiremockPath => {
+  const options = {
+    detached: true
+  };
+  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath], options);
+  wiremockProcess.stdout.on("data", data => {
+    wiremockStdOut.write(data);
+  });
+  wiremockProcess.stderr.on("data", data => {
+    wiremockStdErr.write(data);
+  });
+  return wiremockProcess;
 };
 
 //check that Wiremock is running
@@ -80,6 +88,9 @@ const isWireMockRunning = http
   .on("error", e => {
     throw e;
   });
+
 //run tests from CLI (command to run tests to be given through action parameter)
+
 //shutdown Wiremock
+
 //output Wiremock logging for stub mismatches
