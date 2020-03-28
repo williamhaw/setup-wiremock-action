@@ -100,8 +100,8 @@ const shutdownWiremock = wiremockProcess => {
 
 //output Wiremock logging for stub mismatches
 const setActionOutput = () => {
-    const stdOutput = fs.readFileSync(wiremockStdOutPath, {encoding: 'utf8'});
-    core.setOutput('wiremock-stdout', stdOutput);
-    const stdError = fs.readFileSync(wiremockStdErrPath, {encoding: 'utf8'});
-    core.setOutput('wiremock-stdout', stdError);
+  const stdOutput = fs.readFileSync(wiremockStdOutPath, { encoding: "utf8" });
+  core.setOutput("wiremock-stdout", stdOutput);
+  const stdError = fs.readFileSync(wiremockStdErrPath, { encoding: "utf8" });
+  core.setOutput("wiremock-stdout", stdError);
 };
