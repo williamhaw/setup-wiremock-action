@@ -24,9 +24,10 @@ Logs from Wiremock. If any stubs are not matched, they will be reported here.
 
 
 ## Example usage
-
+```
 uses: actions/setup-wiremock-action@v0.1.0
 with:
     mappings: 'wiremock-mappings'
     files: 'wiremock-files'
     http-port: '8888'
+```
