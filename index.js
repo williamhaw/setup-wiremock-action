@@ -84,7 +84,7 @@ const startWireMock = wiremockPath => {
 //check that Wiremock is running
 const isWireMockRunning = async () => {
   return await new Promise((resolve, reject) => {
-    http
+    const request = http
       .get(`http://localhost:${inputs.httpPort}/__wiremock_ping`, response => {
         const { statusCode } = response;
         resolve({ isWireMockRunning: statusCode === 200 });
@@ -92,6 +92,7 @@ const isWireMockRunning = async () => {
       .on("error", e => {
         return reject(e);
       });
+    request.end();
   });
 };
 
