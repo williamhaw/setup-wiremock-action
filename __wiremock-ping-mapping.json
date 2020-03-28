@@ -1,0 +1,11 @@
+
+{
+    "request": {
+        "method": "GET",
+        "url": "/__wiremock_ping"
+    },
+    "response": {
+        "status": 200,
+        "body": "ok\n"
+    }
+}
