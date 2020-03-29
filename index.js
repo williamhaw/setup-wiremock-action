@@ -93,7 +93,7 @@ const isWireMockRunning = async httpPort => {
   try {
     const retry = {
       retry: {
-        limit: 1
+        limit: 3
       }
     };
     const response = await got(
