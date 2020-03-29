@@ -31,19 +31,30 @@ Port on which to run Wiremock. Defaults to 8080.
 
 Logs from Wiremock. If any stubs are not matched, they will be reported here.
 
-### `wiremock-stderr`
-
-Errors from running Wiremock. If the commmand to run Wiremock fails, it will be reported here.
-
 ## Example usage
 
 ### Basic usage
 ```
-- uses: actions/setup-java@v1
-    with:
-        java-version: '11'
-- uses: actions/setup-wiremock-action@v0.1.0
-    with:
-        mappings: 'wiremock-mappings'
-        files: 'wiremock-files'
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Set up WireMock as a standalone process
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Action E2E Test
+        uses: ./
+        id: setup-wiremock
+        with:
+          mappings: 'example-mapping-directory'
+          files: 'example-files-directory'
+        continue-on-error: true
+      - name: Get the WireMock standard output
+        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
 ```

@@ -8,9 +8,7 @@ const got = require("got");
 
 const wiremockVersion = "2.26.3";
 const wiremockStdOutPath = "out.log";
-const wiremockStdErrPath = "err.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
-const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
 const wiremockPingMappingFileName = "__wiremock-ping-mapping.json";
 const cwd = process.cwd();
@@ -81,10 +79,7 @@ const startWireMock = wiremockPath => {
     options
   );
   wiremockProcess.stdout.on("data", data => {
-    wiremockStdOut.write(data.toString('utf8'));
-  });
-  wiremockProcess.stderr.on("data", data => {
-    wiremockStdErr.write(data.toString('utf8'));
+    wiremockStdOut.write(data.toString("utf8"));
   });
   return wiremockProcess;
 };
@@ -112,15 +107,12 @@ const isWireMockRunning = async httpPort => {
 const shutdownWiremock = wiremockProcess => {
   wiremockProcess.kill();
   wiremockStdOut.end();
-  wiremockStdErr.end();
 };
 
 //output Wiremock logging for stub mismatches
 const setActionOutput = () => {
   const stdOutput = fs.readFileSync(wiremockStdOutPath, { encoding: "utf8" });
   core.setOutput("wiremock-stdout", stdOutput);
-  const stdError = fs.readFileSync(wiremockStdErrPath, { encoding: "utf8" });
-  core.setOutput("wiremock-stdout", stdError);
 };
 
 const wait = (duration, ...args) =>
@@ -146,7 +138,9 @@ Main logic starts
 
     const isRunning = await isWireMockRunning(httpPort);
 
-    if (!isRunning) {
+    if (isRunning) {
+      console.log("WireMock is up and running");
+    } else {
       core.setFailed("Wiremock was not running.");
     }
   } catch (error) {

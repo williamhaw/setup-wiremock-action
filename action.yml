@@ -16,8 +16,6 @@ inputs:
 outputs:
   wiremock-stdout:
     description: 'Logs from Wiremock'
-  wiremock-stderr:
-    description: 'Errors from running Wiremock'
 runs:
   using: 'node12'
   main: 'index.js'
