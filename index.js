@@ -11,6 +11,7 @@ const wiremockStdErrPath = "err.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
+const wiremockPingMappingFileName = '__wiremock-ping-mapping.json'
 
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
@@ -61,10 +62,10 @@ const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
 };
 
 const copyWiremockPingMapping = wiremockMappingsPath => {
-  const pingMapping = path.join(__dirname, "__wiremock-ping-mapping.json");
+  const pingMapping = path.join(__dirname, wiremockPingMappingFileName);
   fs.copyFileSync(
     pingMapping,
-    path.join(wiremockMappingsPath, "__wiremock-ping-mapping.json")
+    path.join(wiremockMappingsPath, wiremockPingMappingFileName)
   );
 };
 
@@ -145,6 +146,9 @@ Main logic starts
 
     const parentPathLs = cp.execSync(`find ${wiremockParentPath}`).toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
+
+    const pingMappingContents = cp.execSync(`cat ${path.join(wiremockMappingsPath, wiremockPingMappingFileName)}`).toString();
+    console.log(`pingMappingContents: ${pingMappingContents}`);
 
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
