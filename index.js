@@ -152,6 +152,9 @@ Main logic starts
     
     const wiremockPsOutput = cp.execSync(`ps aux | grep -v grep | grep wiremock`).toString();
     console.log(`wiremock ps output: ${wiremockPsOutput}`);
+
+    const pwd = cp.execSync(`pwd`).toString();
+    console.log(`pwd: ${wiremockPsOutput}`);
     
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
