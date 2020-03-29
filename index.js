@@ -3,6 +3,7 @@ const tc = require("@actions/tool-cache");
 const path = require("path");
 const fs = require("fs-extra");
 const cp = require("child_process");
+const process = require("process");
 const got = require("got");
 
 const wiremockVersion = "2.26.3";
@@ -155,6 +156,8 @@ Main logic starts
 
     const pwd = cp.execSync(`pwd`).toString();
     console.log(`pwd: ${pwd}`);
+
+    console.log(`node cwd ${process.cwd}`)
     
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
