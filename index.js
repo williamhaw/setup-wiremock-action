@@ -81,10 +81,10 @@ const startWireMock = wiremockPath => {
     options
   );
   wiremockProcess.stdout.on("data", data => {
-    wiremockStdOut.write(data);
+    wiremockStdOut.write(data.toString('utf8'));
   });
   wiremockProcess.stderr.on("data", data => {
-    wiremockStdErr.write(data);
+    wiremockStdErr.write(data.toString('utf8'));
   });
   return wiremockProcess;
 };
