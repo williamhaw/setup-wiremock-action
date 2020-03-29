@@ -149,8 +149,11 @@ Main logic starts
 
     const pingMappingContents = cp.execSync(`cat ${path.join(wiremockMappingsPath, wiremockPingMappingFileName)}`).toString();
     console.log(`pingMappingContents: ${pingMappingContents}`);
-
+    
     const isRunning = await isWireMockRunning(inputs.httpPort);
+    
+    const wiremockPsOutput = cp.execSync(`ps aux | grep -v grep | grep wiremock`).toString();
+    console.log(`wiremock ps output: ${wiremockPsOutput}`);
 
     if (!isRunning) {
       core.setFailed("Wiremock was not running.");
