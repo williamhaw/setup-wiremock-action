@@ -46,17 +46,16 @@ const installWiremockFromToolCache = async () => {
   }
 };
 
-//copy mappings and static files to ${wiremock-path}/mappings and ${wiremock-path}/x__files
 const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
-  const wiremockParentPath = path.dirname(wiremockPath);
-  const wiremockMappingsPath = path.join(wiremockParentPath, "mappings");
-  const wiremockFilesPath = path.join(wiremockParentPath, "__files");
+  const cwd = process.cwd(); // we are going to start Wiremock in the current working directory, not in Wiremock's directory
+  const wiremockMappingsPath = path.join(cwd, "mappings");
+  const wiremockFilesPath = path.join(cwd, "__files");
   fs.emptyDirSync(wiremockMappingsPath);
   fs.emptyDirSync(wiremockFilesPath);
   fs.copySync(inputMappingsPath, wiremockMappingsPath);
   fs.copySync(inputFilesPath, wiremockFilesPath);
   return {
-    wiremockParentPath: wiremockParentPath,
+    currentWorkingDirectory: cwd,
     wiremockMappingsPath: wiremockMappingsPath,
     wiremockFilesPath: wiremockFilesPath
   };
@@ -134,7 +133,7 @@ Main logic starts
     const wiremockPath = await installWiremockFromToolCache();
 
     const {
-      wiremockParentPath,
+      currentWorkingDirectory,
       wiremockMappingsPath,
       wiremockFilesPath
     } = copyStubs(inputs.mappingsPath, inputs.filesPath, wiremockPath);
@@ -145,8 +144,8 @@ Main logic starts
 
     await wait(2000);
 
-    const parentPathLs = cp.execSync(`find ${wiremockParentPath}`).toString();
-    console.log(`wiremockParentPath: ${parentPathLs}`);
+    const parentPathLs = cp.execSync(`find ${currentWorkingDirectory}`).toString();
+    console.log(`currentWorkingDirectory: ${parentPathLs}`);
 
     const pingMappingContents = cp
       .execSync(
