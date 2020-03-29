@@ -154,7 +154,7 @@ Main logic starts
     console.log(`wiremock ps output: ${wiremockPsOutput}`);
 
     const pwd = cp.execSync(`pwd`).toString();
-    console.log(`pwd: ${wiremockPsOutput}`);
+    console.log(`pwd: ${pwd}`);
     
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
