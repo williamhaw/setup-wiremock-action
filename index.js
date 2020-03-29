@@ -82,7 +82,7 @@ const startWireMock = wiremockPath => {
   return wiremockProcess;
 };
 
-const isWireMockRunning = async () => {
+const isWireMockRunning = async (httpPort) => {
   try {
     const retry = {
       retry: {
@@ -90,7 +90,7 @@ const isWireMockRunning = async () => {
       }
     };
     const response = await got(
-      `http://localhost:${inputs.httpPort}/__wiremock_ping`,
+      `http://localhost:${httpPort}/__wiremock_ping`,
       retry
     );
     return response.statusCode === 200;
@@ -146,7 +146,7 @@ Main logic starts
     const parentPathLs = cp.execSync(`find ${wiremockParentPath}`).toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
 
-    const isRunning = await isWireMockRunning();
+    const isRunning = await isWireMockRunning(inputs.httpPort);
 
     if (!isRunning) {
       core.setFailed("Wiremock was not running.");
