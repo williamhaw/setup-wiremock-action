@@ -157,7 +157,7 @@ Main logic starts
     const pwd = cp.execSync(`pwd`).toString();
     console.log(`pwd: ${pwd}`);
 
-    console.log(`node cwd ${process.cwd}`)
+    console.log(`node cwd ${process.cwd()}`)
     
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
