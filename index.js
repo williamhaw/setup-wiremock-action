@@ -40,11 +40,11 @@ const installWiremockFromToolCache = async () => {
       "wiremock",
       wiremockVersion
     );
-    return { wiremockPath: path.join(cachedPath, wiremockArtifactName) };
+    return path.join(cachedPath, wiremockArtifactName);
   }
 };
 
-//copy mappings and static files to ${wiremock-path}/mappings and ${wiremock-path}/__files
+//copy mappings and static files to ${wiremock-path}/mappings and ${wiremock-path}/x__files
 const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
   const wiremockParentPath = path.dirname(wiremockPath);
   const wiremockMappingsPath = path.join(wiremockParentPath, "mappings");
@@ -72,14 +72,14 @@ const startWireMock = wiremockPath => {
   const options = {
     detached: true
   };
-  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath], options);
+  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath, "--verbose"], options);
   wiremockProcess.stdout.on("data", data => {
     wiremockStdOut.write(data);
   });
   wiremockProcess.stderr.on("data", data => {
     wiremockStdErr.write(data);
   });
-  return { wiremockProcess: wiremockProcess };
+  return wiremockProcess;
 };
 
 const isWireMockRunning = async () => {
@@ -93,7 +93,7 @@ const isWireMockRunning = async () => {
       `http://localhost:${inputs.httpPort}/__wiremock_ping`,
       retry
     );
-    return { isWireMockRunning: response.statusCode === 200 };
+    return response.statusCode === 200;
   } catch (e) {
     throw e;
   }
@@ -125,60 +125,42 @@ const wait = (duration, ...args) =>
 Main logic starts
 */
 
-const inputs = getInputs();
+(async function () {
+  try {
+    const inputs = getInputs();
 
-installWiremockFromToolCache()
-  .then(state => {
-    return {
-      ...state,
-      ...copyStubs(inputs.mappingsPath, inputs.filesPath, state.wiremockPath)
-    };
-  })
-  .then(state => {
-    copyWiremockPingMapping(state.wiremockMappingsPath);
-    return state;
-  })
-  .then(state => {
-    return {
-      ...state,
-      ...startWireMock(state.wiremockPath)
-    };
-  })
-  // .then(state => {
-  //   console.log(state);
-  //   return state;
-  // })
-  .then(state => {
-    const parentPathLs = cp
-      .execSync(`find ${state.wiremockParentPath}`)
-      .toString();
-    console.log(`wiremockParentPath: ${parentPathLs}`);
-    return state;
-  })
-  .then(async state => {
+    const wiremockPath = await installWiremockFromToolCache();
+
+    const {
+      wiremockParentPath,
+      wiremockMappingsPath,
+      wiremockFilesPath
+    } = copyStubs(inputs.mappingsPath, inputs.filesPath, wiremockPath);
+
+    copyWiremockPingMapping(wiremockMappingsPath);
+
+    var wiremockProcess = startWireMock(wiremockPath);
+
     await wait(2000);
-    return state;
-  })
-  // .then(async state => {
-  //   const isRunning = await isWireMockRunning();
-  //   return {
-  //     ...state,
-  //     ...isRunning
-  //   };
-  // })
-  .then(state => {
-    shutdownWiremock(state.wiremockProcess);
-    return state;
-  })
-  .then(state => {
-    setActionOutput();
-    return state;
-  })
-  .catch(error => {
+
+    const parentPathLs = cp.execSync(`find ${wiremockParentPath}`).toString();
+    console.log(`wiremockParentPath: ${parentPathLs}`);
+
+    const isRunning = await isWireMockRunning();
+
+    if (!isRunning) {
+      core.setFailed("Wiremock was not running.");
+    }
+  } catch (error) {
     console.error(error);
     core.setFailed(error.message);
-    process.exit(1);
-  });
+  } finally {
+    if (wiremockProcess) {
+      shutdownWiremock(wiremockProcess);
+    }
+    setActionOutput();
+  }
+})();
 
 /*
   Main logic ends
