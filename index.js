@@ -153,6 +153,7 @@ installWiremockFromToolCache()
       .execSync(`find ${state.wiremockParentPath}`)
       .toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
+    return state;
   })
   .then(async state => {
     await wait(2000);
