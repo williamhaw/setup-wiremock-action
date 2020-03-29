@@ -12,7 +12,7 @@ const wiremockStdErrPath = "err.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
-const wiremockPingMappingFileName = '__wiremock-ping-mapping.json'
+const wiremockPingMappingFileName = "__wiremock-ping-mapping.json";
 
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
@@ -74,7 +74,11 @@ const startWireMock = wiremockPath => {
   const options = {
     detached: true
   };
-  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath, "--verbose"], options);
+  const wiremockProcess = cp.spawn(
+    "java",
+    ["-jar", wiremockPath, "--verbose"],
+    options
+  );
   wiremockProcess.stdout.on("data", data => {
     wiremockStdOut.write(data);
   });
@@ -84,21 +88,17 @@ const startWireMock = wiremockPath => {
   return wiremockProcess;
 };
 
-const isWireMockRunning = async (httpPort) => {
-  try {
-    const retry = {
-      retry: {
-        limit: 1
-      }
-    };
-    const response = await got(
-      `http://localhost:${httpPort}/__wiremock_ping`,
-      retry
-    );
-    return response.statusCode === 200;
-  } catch (e) {
-    throw e;
-  }
+const isWireMockRunning = async httpPort => {
+  const retry = {
+    retry: {
+      limit: 1
+    }
+  };
+  const response = await got(
+    `http://localhost:${httpPort}/__wiremock_ping`,
+    retry
+  );
+  return response.statusCode === 200;
 };
 
 //run tests from CLI (command to run tests to be given through action parameter)
@@ -148,17 +148,23 @@ Main logic starts
     const parentPathLs = cp.execSync(`find ${wiremockParentPath}`).toString();
     console.log(`wiremockParentPath: ${parentPathLs}`);
 
-    const pingMappingContents = cp.execSync(`cat ${path.join(wiremockMappingsPath, wiremockPingMappingFileName)}`).toString();
+    const pingMappingContents = cp
+      .execSync(
+        `cat ${path.join(wiremockMappingsPath, wiremockPingMappingFileName)}`
+      )
+      .toString();
     console.log(`pingMappingContents: ${pingMappingContents}`);
-    
-    const wiremockPsOutput = cp.execSync(`ps aux | grep -v grep | grep wiremock`).toString();
+
+    const wiremockPsOutput = cp
+      .execSync(`ps aux | grep -v grep | grep wiremock`)
+      .toString();
     console.log(`wiremock ps output: ${wiremockPsOutput}`);
 
     const pwd = cp.execSync(`pwd`).toString();
     console.log(`pwd: ${pwd}`);
 
-    console.log(`node cwd ${process.cwd()}`)
-    
+    console.log(`node cwd ${process.cwd()}`);
+
     const isRunning = await isWireMockRunning(inputs.httpPort);
 
     if (!isRunning) {
