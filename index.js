@@ -155,19 +155,16 @@ installWiremockFromToolCache()
     console.log(`wiremockParentPath: ${parentPathLs}`);
   })
   .then(async state => {
-    await wait(1000);
-    wiremockStdOut.end();
-    wiremockStdErr.end();
-    setActionOutput();
+    await wait(2000);
     return state;
   })
-  .then(async state => {
-    const isRunning = await isWireMockRunning();
-    return {
-      ...state,
-      ...isRunning
-    };
-  })
+  // .then(async state => {
+  //   const isRunning = await isWireMockRunning();
+  //   return {
+  //     ...state,
+  //     ...isRunning
+  //   };
+  // })
   .then(state => {
     shutdownWiremock(state.wiremockProcess);
     return state;
