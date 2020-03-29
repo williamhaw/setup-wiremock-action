@@ -157,6 +157,7 @@ Main logic starts
       shutdownWiremock(wiremockProcess);
     }
     setActionOutput();
+    await wait(1000);
   }
 })();
 
