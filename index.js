@@ -90,16 +90,20 @@ const startWireMock = wiremockPath => {
 };
 
 const isWireMockRunning = async httpPort => {
-  const retry = {
-    retry: {
-      limit: 1
-    }
-  };
-  const response = await got(
-    `http://localhost:${httpPort}/__wiremock_ping`,
-    retry
-  );
-  return response.statusCode === 200;
+  try {
+    const retry = {
+      retry: {
+        limit: 1
+      }
+    };
+    const response = await got(
+      `http://localhost:${httpPort}/__wiremock_ping`,
+      retry
+    );
+    return response.statusCode === 200;
+  } catch (e) {
+    throw e; // rethrow on got errors like ECONNREFUSED so that main error handling can catch this error.
+  }
 };
 
 //run tests from CLI (command to run tests to be given through action parameter)
