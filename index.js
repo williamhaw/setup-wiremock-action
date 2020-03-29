@@ -104,8 +104,9 @@ const isWireMockRunning = async httpPort => {
 //run tests from CLI (command to run tests to be given through action parameter)
 
 //shutdown Wiremock
-const shutdownWiremock = wiremockProcess => {
+const shutdownWiremock = async wiremockProcess => {
   wiremockProcess.kill();
+  await wait(1000);
   wiremockStdOut.end();
 };
 
@@ -148,10 +149,9 @@ Main logic starts
     core.setFailed(error.message);
   } finally {
     if (wiremockProcess) {
-      shutdownWiremock(wiremockProcess);
+      await shutdownWiremock(wiremockProcess);
     }
     setActionOutput();
-    await wait(1000);
   }
 })();
 
