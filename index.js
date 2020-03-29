@@ -13,6 +13,7 @@ const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
 const wiremockStdErr = fs.createWriteStream(wiremockStdErrPath);
 const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
 const wiremockPingMappingFileName = "__wiremock-ping-mapping.json";
+const cwd = process.cwd();
 
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
@@ -46,8 +47,8 @@ const installWiremockFromToolCache = async () => {
   }
 };
 
-const copyStubs = (inputMappingsPath, inputFilesPath, wiremockPath) => {
-  const cwd = process.cwd(); // we are going to start Wiremock in the current working directory, not in Wiremock's directory
+const copyStubs = (inputMappingsPath, inputFilesPath) => {
+  // we are going to start Wiremock in the current working directory, not in Wiremock's directory
   const wiremockMappingsPath = path.join(cwd, "mappings");
   const wiremockFilesPath = path.join(cwd, "__files");
   fs.emptyDirSync(wiremockMappingsPath);
@@ -71,6 +72,7 @@ const copyWiremockPingMapping = wiremockMappingsPath => {
 
 const startWireMock = wiremockPath => {
   const options = {
+    cwd: cwd,
     detached: true
   };
   const wiremockProcess = cp.spawn(
@@ -128,43 +130,17 @@ Main logic starts
 
 (async function () {
   try {
-    const inputs = getInputs();
+    const { mappingsPath, filesPath, httpPort } = getInputs();
 
     const wiremockPath = await installWiremockFromToolCache();
 
-    const {
-      currentWorkingDirectory,
-      wiremockMappingsPath,
-      wiremockFilesPath
-    } = copyStubs(inputs.mappingsPath, inputs.filesPath, wiremockPath);
+    const { wiremockMappingsPath } = copyStubs(mappingsPath, filesPath);
 
     copyWiremockPingMapping(wiremockMappingsPath);
 
     var wiremockProcess = startWireMock(wiremockPath);
 
-    await wait(2000);
-
-    const parentPathLs = cp.execSync(`find ${currentWorkingDirectory}`).toString();
-    console.log(`currentWorkingDirectory: ${parentPathLs}`);
-
-    const pingMappingContents = cp
-      .execSync(
-        `cat ${path.join(wiremockMappingsPath, wiremockPingMappingFileName)}`
-      )
-      .toString();
-    console.log(`pingMappingContents: ${pingMappingContents}`);
-
-    const wiremockPsOutput = cp
-      .execSync(`ps aux | grep -v grep | grep wiremock`)
-      .toString();
-    console.log(`wiremock ps output: ${wiremockPsOutput}`);
-
-    const pwd = cp.execSync(`pwd`).toString();
-    console.log(`pwd: ${pwd}`);
-
-    console.log(`node cwd ${process.cwd()}`);
-
-    const isRunning = await isWireMockRunning(inputs.httpPort);
+    const isRunning = await isWireMockRunning(httpPort);
 
     if (!isRunning) {
       core.setFailed("Wiremock was not running.");
