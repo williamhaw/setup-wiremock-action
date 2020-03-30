@@ -187,7 +187,10 @@ Main logic starts
       core.setFailed("Errors during test setup");
     }
   }
-})().catch(error => core.setFailed(error.message));
+})().catch(error => {
+  core.setFailed(error.message);
+  process.exit(1);
+});
 
 /*
   Main logic ends
