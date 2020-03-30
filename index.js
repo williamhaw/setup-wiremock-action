@@ -159,7 +159,7 @@ Main logic starts
 
     var wiremockProcess = startWireMock(wiremockPath);
 
-    const isRunning = await isWireMockRunning(httpPort);
+    var isRunning = await isWireMockRunning(httpPort);
 
     if (isRunning) {
       console.log("WireMock is up and running");
@@ -167,7 +167,7 @@ Main logic starts
       throw "Wiremock was not running.";
     }
 
-    const isTestRunSucceeded = runAPITests(testCommandString);
+    var isTestRunSucceeded = runAPITests(testCommandString);
 
     if (isTestRunSucceeded) {
       console.log("API test run succeeded");
@@ -183,6 +183,9 @@ Main logic starts
     }
     setActionOutput();
     cleanupFiles(wiremockMappingsPath, wiremockFilesPath);
+    if(!(isWireMockRunning && isTestRunSucceeded)){
+      core.setFailed("Errors during test setup");
+    }
   }
 })();
 
