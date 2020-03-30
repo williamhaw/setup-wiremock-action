@@ -20,6 +20,12 @@ References:
 References:
   - http://wiremock.org/docs/stubbing/#specifying-the-response-body
 
+### `command`
+
+**Required** Command to run tests
+
+Example: `'npm test -t MyApiTests'`
+
 ### `http-port`
 
 Port on which to run Wiremock. Defaults to 8080.

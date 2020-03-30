@@ -9,6 +9,10 @@ inputs:
     description: 'Path to folder with static files (as described in http://wiremock.org/docs/running-standalone/#json-file-configuration)'
     required: true
     default: 'wiremock-files'
+  command:
+    description: 'Command to run API tests'
+    required: true
+    default: 'node --version'
   http-port:
     description: 'Port on which to run Wiremock'
     required: false

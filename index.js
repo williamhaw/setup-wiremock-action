@@ -16,6 +16,7 @@ const cwd = process.cwd();
 const getInputs = () => {
   const mappingsPath = core.getInput("mappings", { required: true });
   const filesPath = core.getInput("mappings", { required: true });
+  const testCommandString = core.getInput("command", { required: true });
   const httpPort = core.getInput("http-port")
     ? core.getInput("http-port")
     : "8080";
@@ -23,7 +24,8 @@ const getInputs = () => {
   return {
     mappingsPath: mappingsPath,
     filesPath: filesPath,
-    httpPort: httpPort
+    httpPort: httpPort,
+    testCommandString: testCommandString
   };
 };
 
@@ -99,11 +101,14 @@ const isWireMockRunning = async httpPort => {
 };
 
 //run tests from CLI (command to run tests to be given through action parameter)
+const runAPITests = commandString => {
+  console.log(`Command received: ${commandString}`);
+  return true;
+};
 
-//shutdown Wiremock
 const shutdownWiremock = async wiremockProcess => {
   wiremockProcess.kill();
-  await wait(1000);
+  await wait(1000); //kill is asynchronous and there is no killSync method. Required to wait for remaining stdout to be produced.
   wiremockStdOut.end();
 };
 
@@ -129,7 +134,12 @@ Main logic starts
 
 (async function () {
   try {
-    const { mappingsPath, filesPath, httpPort } = getInputs();
+    const {
+      mappingsPath,
+      filesPath,
+      httpPort,
+      testCommandString
+    } = getInputs();
 
     const wiremockPath = await installWiremockFromToolCache();
 
@@ -145,7 +155,15 @@ Main logic starts
     if (isRunning) {
       console.log("WireMock is up and running");
     } else {
-      core.setFailed("Wiremock was not running.");
+      throw "Wiremock was not running.";
+    }
+
+    const isTestRunSucceeded = runAPITests(testCommandString);
+
+    if (isTestRunSucceeded) {
+      console.log("API test run succeeded");
+    } else {
+      throw "API test run failed";
     }
   } catch (error) {
     console.error(error);
