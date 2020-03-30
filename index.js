@@ -74,7 +74,7 @@ const startWireMock = wiremockPath => {
   };
   const wiremockProcess = cp.spawn(
     "java",
-    ["-jar", wiremockPath, "--verbose"],
+    ["-jar", wiremockPath],
     options
   );
   wiremockProcess.stdout.on("data", data => {
