@@ -34,6 +34,10 @@ Example: `'npm test --testNamePattern=MyApiTests'`
 
 Port on which to run Wiremock. Defaults to 8080.
 
+### `verbose`
+
+Turns on verbose Wiremock logging (log all requests and responses). Defaults to false (only log stub mismatches).
+
 
 ## Outputs
 
@@ -64,6 +68,7 @@ jobs:
         with:
           mappings: 'example-mapping-directory'
           files: 'example-files-directory'
+          command: 'node example.test.js'
         continue-on-error: true
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
