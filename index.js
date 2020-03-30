@@ -185,6 +185,7 @@ Main logic starts
     cleanupFiles(wiremockMappingsPath, wiremockFilesPath);
     if (!(isRunning && isTestRunSucceeded)) {
       core.setFailed("Errors during test setup");
+      process.exit(1);
     }
   }
 })().catch(error => {
