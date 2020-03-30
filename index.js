@@ -183,11 +183,11 @@ Main logic starts
     }
     setActionOutput();
     cleanupFiles(wiremockMappingsPath, wiremockFilesPath);
-    if(!(isRunning && isTestRunSucceeded)){
+    if (!(isRunning && isTestRunSucceeded)) {
       core.setFailed("Errors during test setup");
     }
   }
-})();
+})().catch(error => core.setFailed(error.message));
 
 /*
   Main logic ends
