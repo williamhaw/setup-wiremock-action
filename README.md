@@ -12,6 +12,7 @@ Requirements: Java (preferably Java 11)
 
 References:
   -  http://wiremock.org/docs/running-standalone/#json-file-configuration
+  -  http://wiremock.org/docs/stubbing/
 
 ### `files`
 
@@ -19,6 +20,7 @@ References:
 
 References:
   - http://wiremock.org/docs/stubbing/#specifying-the-response-body
+  - http://wiremock.org/docs/stubbing/
 
 ### `command`
 
