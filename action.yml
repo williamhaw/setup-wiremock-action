@@ -1,4 +1,8 @@
 name: 'Setup Wiremock'
+author: 'William Haw'
+branding:
+  icon: 'box'
+  color: 'orange'
 description: 'Setup a standalone Wiremock process with stubs defined in JSON files'
 inputs:
   mappings:
