@@ -1,0 +1,8 @@
+{
+  "userId": 42,
+  "names": "Alice, Betty, Charles",
+  "address": {
+    "country": "US",
+    "state": "TX"
+  }
+}
