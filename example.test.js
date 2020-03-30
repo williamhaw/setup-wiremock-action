@@ -3,22 +3,21 @@ const fs = require("fs-extra");
 const assert = require("assert").strict;
 
 (async function () {
-  const response = await got(`http://localhost:${httpPort}/one`);
-  assert.strictEqual(response.statusCode, 200);
-  assert.strictEqual(response.body, "one\n");
+  const responseOne = await got(`http://localhost:8080/one`);
+  assert.strictEqual(responseOne.statusCode, 200);
+  assert.strictEqual(responseOne.body, "one\n");
 
-  const response = await got(`http://localhost:${httpPort}/two`);
-  assert.strictEqual(response.statusCode, 200);
-  assert.strictEqual(response.body, '{"statuses":[1,2,3]}');
+  const responseTwo = await got(`http://localhost:8080/two`);
+  assert.strictEqual(responseTwo.statusCode, 200);
+  assert.strictEqual(responseTwo.body, '{"statuses":[1,2,3]}');
 
-  const response = await got(`http://localhost:${httpPort}/three`);
-
+  const responseThree = await got(`http://localhost:8080/three`);
   const expectedResponseString = fs
     .readFileSync("example-files-directory/example-file.json")
     .toString();
-  assert.strictEqual(response.statusCode, 200);
+  assert.strictEqual(responseThree.statusCode, 200);
   assert.strictEqual(
-    JSON.parse(response.body),
-    JSON.parse(expectedResponseString)
+    JSON.stringify(JSON.parse(responseThree.body)), //compare values
+    JSON.stringify(JSON.parse(expectedResponseString))
   );
-})();
+})().catch(error => console.error(error));
