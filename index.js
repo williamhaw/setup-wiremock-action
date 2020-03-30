@@ -49,23 +49,20 @@ const copyStubs = (inputMappingsPath, inputFilesPath) => {
   // we are going to start Wiremock in the current working directory, not in Wiremock's directory
   const wiremockMappingsPath = path.join(cwd, "mappings");
   const wiremockFilesPath = path.join(cwd, "__files");
+  const pingMapping = path.join(__dirname, wiremockPingMappingFileName);
   fs.emptyDirSync(wiremockMappingsPath);
   fs.emptyDirSync(wiremockFilesPath);
   fs.copySync(inputMappingsPath, wiremockMappingsPath);
   fs.copySync(inputFilesPath, wiremockFilesPath);
+  fs.copyFileSync(
+    pingMapping,
+    path.join(wiremockMappingsPath, wiremockPingMappingFileName)
+  );
   return {
     currentWorkingDirectory: cwd,
     wiremockMappingsPath: wiremockMappingsPath,
     wiremockFilesPath: wiremockFilesPath
   };
-};
-
-const copyWiremockPingMapping = wiremockMappingsPath => {
-  const pingMapping = path.join(__dirname, wiremockPingMappingFileName);
-  fs.copyFileSync(
-    pingMapping,
-    path.join(wiremockMappingsPath, wiremockPingMappingFileName)
-  );
 };
 
 const startWireMock = wiremockPath => {
@@ -132,8 +129,6 @@ Main logic starts
     const wiremockPath = await installWiremockFromToolCache();
 
     const { wiremockMappingsPath } = copyStubs(mappingsPath, filesPath);
-
-    copyWiremockPingMapping(wiremockMappingsPath);
 
     var wiremockProcess = startWireMock(wiremockPath);
 
