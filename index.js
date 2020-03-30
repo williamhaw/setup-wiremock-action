@@ -113,6 +113,11 @@ const setActionOutput = () => {
   core.setOutput("wiremock-stdout", stdOutput);
 };
 
+const cleanupFiles = (wiremockMappingsPath, wiremockFilesPath) => {
+  fs.removeSync(wiremockMappingsPath);
+  fs.removeSync(wiremockFilesPath);
+};
+
 const wait = (duration, ...args) =>
   new Promise(resolve => {
     setTimeout(resolve, duration, ...args);
@@ -128,7 +133,10 @@ Main logic starts
 
     const wiremockPath = await installWiremockFromToolCache();
 
-    const { wiremockMappingsPath } = copyStubs(mappingsPath, filesPath);
+    var { wiremockMappingsPath, wiremockFilesPath } = copyStubs(
+      mappingsPath,
+      filesPath
+    );
 
     var wiremockProcess = startWireMock(wiremockPath);
 
@@ -147,6 +155,7 @@ Main logic starts
       await shutdownWiremock(wiremockProcess);
     }
     setActionOutput();
+    cleanupFiles(wiremockMappingsPath, wiremockFilesPath);
   }
 })();
 
