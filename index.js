@@ -21,12 +21,14 @@ const getInputs = () => {
   const httpPort = core.getInput("http-port")
     ? core.getInput("http-port")
     : "8080";
+  const isVerboseLogging = core.getInput("verbose") === "true" ? true : false;
 
   return {
     mappingsPath: mappingsPath,
     filesPath: filesPath,
     httpPort: httpPort,
-    testCommandString: testCommandString
+    testCommandString: testCommandString,
+    isVerboseLogging: isVerboseLogging
   };
 };
 
@@ -68,12 +70,16 @@ const copyStubs = (inputMappingsPath, inputFilesPath) => {
   };
 };
 
-const startWireMock = wiremockPath => {
+const startWireMock = (wiremockPath, isVerboseLogging) => {
   const options = {
     cwd: cwd,
     detached: true
   };
-  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath], options);
+  let args = ["-jar", wiremockPath];
+  if (isVerboseLogging) {
+    args.push("--verbose");
+  }
+  const wiremockProcess = cp.spawn("java", args, options);
   wiremockProcess.stdout.on("data", data => {
     wiremockStdOut.write(data.toString("utf8"));
   });
@@ -147,7 +153,8 @@ Main logic starts
       mappingsPath,
       filesPath,
       httpPort,
-      testCommandString
+      testCommandString,
+      isVerboseLogging
     } = getInputs();
 
     const wiremockPath = await installWiremockFromToolCache();
@@ -157,7 +164,7 @@ Main logic starts
       filesPath
     );
 
-    var wiremockProcess = startWireMock(wiremockPath);
+    var wiremockProcess = startWireMock(wiremockPath, isVerboseLogging);
 
     var isRunning = await isWireMockRunning(httpPort);
 

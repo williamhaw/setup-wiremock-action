@@ -17,6 +17,10 @@ inputs:
     description: 'Port on which to run Wiremock'
     required: false
     default: '8080'
+  verbose:
+    description: 'Turn on WireMock verbose logging'
+    required: false
+    default: false
 outputs:
   wiremock-stdout:
     description: 'Logs from Wiremock'
