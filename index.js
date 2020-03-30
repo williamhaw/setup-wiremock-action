@@ -111,7 +111,7 @@ const runAPITests = commandString => {
     Object.entries(command).flatMap(([key, value]) => [`--${key}`, value]) //only support verbose flags for now
   );
 
-  const testProcess = cp.spawnSync(command, args, { stdio: "inherit" });
+  const testProcess = cp.spawnSync(executable, args, { stdio: "inherit" });
   return testProcess.status === 0;
 };
 
