@@ -7,11 +7,12 @@
       },
       "response": {
         "status": 200,
-        "body": "one"
+        "body": "one\n"
       }
     },
     {
       "request": {
+        "method": "GET",
         "url": "/two"
       },
       "response": {
@@ -23,6 +24,7 @@
     },
     {
       "request": {
+        "method": "GET",
         "url": "/three"
       },
       "response": {
