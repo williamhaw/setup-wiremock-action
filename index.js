@@ -5,6 +5,7 @@ const fs = require("fs-extra");
 const cp = require("child_process");
 const process = require("process");
 const got = require("got");
+const minimist = require("minimist-string");
 
 const wiremockVersion = "2.26.3";
 const wiremockStdOutPath = "out.log";
@@ -72,11 +73,7 @@ const startWireMock = wiremockPath => {
     cwd: cwd,
     detached: true
   };
-  const wiremockProcess = cp.spawn(
-    "java",
-    ["-jar", wiremockPath],
-    options
-  );
+  const wiremockProcess = cp.spawn("java", ["-jar", wiremockPath], options);
   wiremockProcess.stdout.on("data", data => {
     wiremockStdOut.write(data.toString("utf8"));
   });
@@ -103,7 +100,19 @@ const isWireMockRunning = async httpPort => {
 //run tests from CLI (command to run tests to be given through action parameter)
 const runAPITests = commandString => {
   console.log(`Command received: ${commandString}`);
-  return true;
+  const command = minimist(commandString);
+  const executable = command._[0];
+  const executableInput = command._.slice(1);
+
+  var args = [];
+  args.push(executableInput);
+
+  args.push(
+    Object.entries(command).flatMap(([key, value]) => [`--${key}`, value]) //only support verbose flags for now
+  );
+
+  const testProcess = cp.spawnSync(command, args, { stdio: "inherit" });
+  return testProcess.status === 0;
 };
 
 const shutdownWiremock = async wiremockProcess => {
