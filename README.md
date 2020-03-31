@@ -63,7 +63,7 @@ jobs:
         with:
           java-version: '11'
       - name: Action E2E Test
-        uses: williamhaw/setup-wiremock-action@v0.1.1
+        uses: williamhaw/setup-wiremock-action@v0.1.2
         id: setup-wiremock
         with:
           mappings: 'example-mapping-directory'
