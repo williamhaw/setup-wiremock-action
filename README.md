@@ -69,7 +69,6 @@ jobs:
           mappings: 'example-mapping-directory'
           files: 'example-files-directory'
           command: 'node example.test.js'
-        continue-on-error: true
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
 ```
