@@ -64,9 +64,11 @@ jobs:
         uses: williamhaw/setup-wiremock-action@v0.1.2
         id: setup-wiremock
         with:
+          http-port: '8080'
           mappings: 'example-mapping-directory'
           files: 'example-files-directory'
           command: 'node example.test.js'
+          verbose: false
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
 ```
