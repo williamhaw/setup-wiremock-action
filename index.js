@@ -105,20 +105,8 @@ const isWireMockRunning = async (httpPort) => {
 
 //run tests from CLI (command to run tests to be given through action parameter)
 const runAPITests = (commandString) => {
-  const command = minimist(commandString);
-  const executable = command._[0];
-  const executableInput = command._.slice(1);
-
-  var args = [];
-  args.push(executableInput);
-
-  args.push(
-    Object.entries(command).flatMap(([key, value]) => [`--${key}`, value]) //only support verbose flags for now
-  );
-
-  console.log(`Running executable: ${executable} with args: ${args}`);
-
-  const testProcess = cp.spawnSync(commandString, args, {
+  console.log(`Running command: ${commandString}`);
+  const testProcess = cp.spawnSync(commandString, {
     stdio: "inherit",
     shell: true,
   });
