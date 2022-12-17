@@ -28,7 +28,7 @@ const getInputs = () => {
     filesPath: filesPath,
     httpPort: httpPort,
     testCommandString: testCommandString,
-    isVerboseLogging: isVerboseLogging
+    isVerboseLogging: isVerboseLogging,
   };
 };
 
@@ -66,32 +66,32 @@ const copyStubs = (inputMappingsPath, inputFilesPath) => {
   return {
     currentWorkingDirectory: cwd,
     wiremockMappingsPath: wiremockMappingsPath,
-    wiremockFilesPath: wiremockFilesPath
+    wiremockFilesPath: wiremockFilesPath,
   };
 };
 
 const startWireMock = (wiremockPath, isVerboseLogging) => {
   const options = {
     cwd: cwd,
-    detached: true
+    detached: true,
   };
   let args = ["-jar", wiremockPath];
   if (isVerboseLogging) {
     args.push("--verbose");
   }
   const wiremockProcess = cp.spawn("java", args, options);
-  wiremockProcess.stdout.on("data", data => {
+  wiremockProcess.stdout.on("data", (data) => {
     wiremockStdOut.write(data.toString("utf8"));
   });
   return wiremockProcess;
 };
 
-const isWireMockRunning = async httpPort => {
+const isWireMockRunning = async (httpPort) => {
   try {
     const retry = {
       retry: {
-        limit: 3
-      }
+        limit: 3,
+      },
     };
     const response = await got(
       `http://localhost:${httpPort}/__wiremock_ping`,
@@ -104,7 +104,7 @@ const isWireMockRunning = async httpPort => {
 };
 
 //run tests from CLI (command to run tests to be given through action parameter)
-const runAPITests = commandString => {
+const runAPITests = (commandString) => {
   const command = minimist(commandString);
   const executable = command._[0];
   const executableInput = command._.slice(1);
@@ -118,11 +118,14 @@ const runAPITests = commandString => {
 
   console.log(`Running executable: ${executable} with args: ${args}`);
 
-  const testProcess = cp.spawnSync(executable, args, { stdio: "inherit" });
+  const testProcess = cp.spawnSync(commandString, args, {
+    stdio: "inherit",
+    shell: true,
+  });
   return testProcess.status === 0;
 };
 
-const shutdownWiremock = async wiremockProcess => {
+const shutdownWiremock = async (wiremockProcess) => {
   wiremockProcess.kill();
   await wait(1000); //kill is asynchronous and there is no killSync method. Required to wait for remaining stdout to be produced.
   wiremockStdOut.end();
@@ -140,7 +143,7 @@ const cleanupFiles = (wiremockMappingsPath, wiremockFilesPath) => {
 };
 
 const wait = (duration, ...args) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(resolve, duration, ...args);
   });
 
@@ -155,7 +158,7 @@ Main logic starts
       filesPath,
       httpPort,
       testCommandString,
-      isVerboseLogging
+      isVerboseLogging,
     } = getInputs();
 
     const wiremockPath = await installWiremockFromToolCache();
@@ -196,7 +199,7 @@ Main logic starts
       process.exit(1);
     }
   }
-})().catch(error => {
+})().catch((error) => {
   core.setFailed(error.message);
   process.exit(1);
 });
