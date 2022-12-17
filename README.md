@@ -26,7 +26,7 @@ References:
 
 **Required** Command to run tests
 
-Note: Only verbose flags are currently supported. (Flags that start with `--`)
+Note: a child process is spawned and run in a shell with this command, so **do not** run unvalidated commands.
 
 Example: `'npm test --testNamePattern=MyApiTests'`
 
@@ -66,9 +66,11 @@ jobs:
         uses: williamhaw/setup-wiremock-action@v0.1.2
         id: setup-wiremock
         with:
+          http-port: '8080'
           mappings: 'example-mapping-directory'
           files: 'example-files-directory'
           command: 'node example.test.js'
+          verbose: false
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
 ```

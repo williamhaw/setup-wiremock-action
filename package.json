@@ -4,7 +4,7 @@
   "description": "Setup a standalone Wiremock process with stubs defined in JSON files",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:example": "node example.test.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,7 @@
     "@actions/core": "^1.9.1",
     "@actions/tool-cache": "^1.3.3",
     "fs-extra": "^9.0.0",
-    "got": "^10.7.0",
-    "minimist-string": "^1.0.2"
+    "got": "^10.7.0"
   },
   "devDependencies": {
     "prettier": "2.0.2",
