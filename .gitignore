@@ -1,0 +1,7 @@
+# IDE
+.idea
+.fleet
+.vscode
+
+# MacOS folder mapper file
+.DS_Store
