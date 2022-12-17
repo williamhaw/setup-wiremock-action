@@ -37,7 +37,7 @@ const installWiremockFromToolCache = async () => {
     return { wiremockPath: path.join(wiremockPath, wiremockArtifactName) };
   } else {
     wiremockPath = await tc.downloadTool(
-      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/${wiremockArtifactName}`
+      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/${wiremockVersion}/${wiremockArtifactName}`
     );
     const cachedPath = await tc.cacheFile(
       wiremockPath,
