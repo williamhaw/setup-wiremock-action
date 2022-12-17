@@ -26,8 +26,6 @@ References:
 
 **Required** Command to run tests
 
-Note: Only verbose flags are currently supported. (Flags that start with `--`)
-
 Example: `'npm test --testNamePattern=MyApiTests'`
 
 ### `http-port`
