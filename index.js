@@ -9,7 +9,7 @@ const got = require("got");
 const wiremockVersion = "2.35.0";
 const wiremockStdOutPath = "out.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
-const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
+const wiremockArtifactName = `wiremock-jre8-standalone-${wiremockVersion}.jar`;
 const wiremockPingMappingFileName = "__wiremock-ping-mapping.json";
 const cwd = process.cwd();
 
