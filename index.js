@@ -5,7 +5,6 @@ const fs = require("fs-extra");
 const cp = require("child_process");
 const process = require("process");
 const got = require("got");
-const minimist = require("minimist-string");
 
 const wiremockVersion = "2.26.3";
 const wiremockStdOutPath = "out.log";
