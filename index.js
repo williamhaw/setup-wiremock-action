@@ -78,6 +78,9 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
   if (isVerboseLogging) {
     args.push("--verbose");
   }
+  console.log(`Running command: java ${args} with options ${options}`);
+  cp.execSync(`ls ${wiremockPath}`);
+
   const wiremockProcess = cp.spawn("java", args, options);
   wiremockProcess.stdout.on("data", (data) => {
     wiremockStdOut.write(data.toString("utf8"));
