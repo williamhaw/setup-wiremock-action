@@ -59,8 +59,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: '11'
       - name: Action E2E Test
         uses: williamhaw/setup-wiremock-action@v0.1.2
