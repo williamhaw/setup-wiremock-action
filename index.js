@@ -48,6 +48,7 @@ const installWiremockFromToolCache = async () => {
       "wiremock",
       wiremockVersion
     );
+    console.log(`Cached path ${cachedPath}`);
     return path.join(cachedPath, wiremockArtifactName);
   }
 };
