@@ -29,5 +29,5 @@ outputs:
   wiremock-stdout:
     description: 'Logs from Wiremock'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'index.js'
