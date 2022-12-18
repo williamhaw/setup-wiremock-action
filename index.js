@@ -6,10 +6,10 @@ const cp = require("child_process");
 const process = require("process");
 const got = require("got");
 
-const wiremockVersion = "2.26.3";
+const wiremockVersion = "2.35.0";
 const wiremockStdOutPath = "out.log";
 const wiremockStdOut = fs.createWriteStream(wiremockStdOutPath);
-const wiremockArtifactName = `wiremock-standalone-${wiremockVersion}.jar`;
+const wiremockArtifactName = `wiremock-jre8-standalone-${wiremockVersion}.jar`;
 const wiremockPingMappingFileName = "__wiremock-ping-mapping.json";
 const cwd = process.cwd();
 
@@ -34,17 +34,21 @@ const getInputs = () => {
 const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
-    return { wiremockPath: path.join(wiremockPath, wiremockArtifactName) };
+    console.log(`Versions of wiremock available: ${tc.findAllVersions('wiremock')}`);
+    return path.join(wiremockPath, wiremockArtifactName);
   } else {
     wiremockPath = await tc.downloadTool(
-      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/${wiremockVersion}/${wiremockArtifactName}`
+      `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/${wiremockVersion}/${wiremockArtifactName}`
     );
+    console.log(`not cached: downloaded wiremock to ${wiremockPath}`);
+    console.log(`Versions of wiremock available: ${tc.findAllVersions('wiremock')}`);
     const cachedPath = await tc.cacheFile(
       wiremockPath,
       `wiremock-standalone-${wiremockVersion}.jar`,
       "wiremock",
       wiremockVersion
     );
+    console.log(`Cached path ${cachedPath}`);
     return path.join(cachedPath, wiremockArtifactName);
   }
 };
@@ -78,6 +82,9 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
   if (isVerboseLogging) {
     args.push("--verbose");
   }
+  console.log(`Running command: java ${args} with options ${options}`);
+  cp.execSync(`ls /opt/hostedtoolcache`);
+
   const wiremockProcess = cp.spawn("java", args, options);
   wiremockProcess.stdout.on("data", (data) => {
     wiremockStdOut.write(data.toString("utf8"));
