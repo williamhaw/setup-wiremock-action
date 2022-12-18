@@ -34,7 +34,7 @@ const getInputs = () => {
 const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
-    return { wiremockPath: path.join(wiremockPath, wiremockArtifactName) };
+    return path.join(wiremockPath, wiremockArtifactName);
   } else {
     wiremockPath = await tc.downloadTool(
       `https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-jre8-standalone/${wiremockVersion}/${wiremockArtifactName}`
