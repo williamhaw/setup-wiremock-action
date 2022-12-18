@@ -7,7 +7,7 @@ jobs:
     name: Set up WireMock as a standalone process
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
