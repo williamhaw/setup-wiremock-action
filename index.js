@@ -79,7 +79,7 @@ const startWireMock = (wiremockPath, isVerboseLogging) => {
     args.push("--verbose");
   }
   console.log(`Running command: java ${args} with options ${options}`);
-  cp.execSync(`ls -R /opt/hostedtoolcache`);
+  cp.execSync(`ls /opt/hostedtoolcache`);
 
   const wiremockProcess = cp.spawn("java", args, options);
   wiremockProcess.stdout.on("data", (data) => {
