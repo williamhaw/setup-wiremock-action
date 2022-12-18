@@ -34,6 +34,7 @@ const getInputs = () => {
 const installWiremockFromToolCache = async () => {
   let wiremockPath = tc.find("wiremock", wiremockVersion);
   if (wiremockPath) {
+    console.log(`Versions of wiremock available: ${tc.findAllVersions('wiremock')}`);
     return path.join(wiremockPath, wiremockArtifactName);
   } else {
     wiremockPath = await tc.downloadTool(
